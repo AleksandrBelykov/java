@@ -54,7 +54,7 @@ public class Utils {
         int threePositionsToWin = 0;
         boolean result = false;
 
-        for(int[] row : Constants.winPositions){
+        for(int[] row : Constants.winCombinations){
 
             for(int i : row){
                 if(grid[i] == player.getMarker()){
@@ -62,6 +62,7 @@ public class Utils {
                     System.out.println("threePositionsToWin is "+threePositionsToWin);
                 }
             }
+
             if (threePositionsToWin==3){
                 result = true;
                 break;

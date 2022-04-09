@@ -6,64 +6,62 @@ import java.util.Scanner;
 
 public class Logics {
     private static char[] grid = Utils.initGrid;
-    public String winner;
+    private String winner = "";
+    private int turnsCounter = 0;
 
-    String findTheWinner(){
-        Scanner scanner = new Scanner(System.in);
+    String findTheWinner(Scanner scanner){
 
-        Player player1 = new Player(Constants.X);
-        Player player2 = new Player(Constants.ZERO);
+        System.out.println("Player1, enter your name, please:");
+        String Player1Name = scanner.nextLine();
+        System.out.println("Player2, enter your name, please:");
+        String Player2Name = scanner.nextLine();
+
+        Player player1 = new Player(Constants.X, Player1Name);
+        Player player2 = new Player(Constants.ZERO, Player2Name);
 
         System.out.println("Show initial grid: ");
         Utils.showGrid(grid);
 
-        int position;
-        int turnsCounter = 0;
-
-
         while (true) {
-            boolean winFlag;
-
-            System.out.println("Player1, your turn:");
-            position = Utils.readPositionFromConsole(scanner);
-            Utils.substitutePosition(grid, player1, position);
-            Utils.showGrid(grid);
             ++turnsCounter;
-            System.out.println("turnsCounter is " + turnsCounter);
-
-            if (turnsCounter > 4) {
-                winFlag = Utils.checkForWins(grid, player1);
-                System.out.println("winFlag is " + winFlag);
-
-                if (winFlag == true) {
-                    winner = "Player 1";
-                    break;
-                } else {
-                    System.out.println("continue the game");
-                }
+            winner = takeTurn(scanner, turnsCounter, player1);
+            if (!winner.isEmpty() || turnsCounter == 9) {
+                break;
             }
 
-            System.out.println("Player2, your turn:");
-            position = Utils.readPositionFromConsole(scanner);
-            Utils.substitutePosition(grid, player2, position);
-            Utils.showGrid(grid);
             ++turnsCounter;
-            System.out.println("turnsCounter is " + turnsCounter);
-
-            if (turnsCounter > 5) {
-                winFlag = Utils.checkForWins(grid, player2);
-                System.out.println("winFlag is " + winFlag);
-
-                if (winFlag == true) {
-                    winner = "Player 2";
-                    break;
-                } else {
-                    System.out.println("continue the game");
-                }
+            winner = takeTurn(scanner, turnsCounter, player2);
+            if (!winner.isEmpty() || turnsCounter == 9) {
+                break;
             }
         }
 
-        scanner.close();
         return winner;
     }
+
+    private static String takeTurn(Scanner scanner, int turnsCounter, Player player){
+        int position;
+        boolean winFlag;
+
+        System.err.printf(player.getName()+", your turn:%n");
+        position = Utils.readPositionFromConsole(scanner);
+        Utils.substitutePosition(grid, player, position);
+        System.out.println("turnsCounter is " + turnsCounter);
+
+        if (turnsCounter > 4) {
+            winFlag = Utils.checkForWins(grid, player);
+            System.out.println("winFlag is " + winFlag);
+
+            if (winFlag) {
+                Utils.showGrid(grid);
+                return player.getName();
+            }
+        }
+
+        System.out.println("continue the game");
+        Utils.showGrid(grid);
+        return "";
+    }
+
+
 }
